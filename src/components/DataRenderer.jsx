@@ -164,7 +164,7 @@ function DataRenderer({ data }) {
                     return <td key={i}>{item[key]}</td>;
                   })}
                   <td>
-                    <button className="edit" onClick={() => editValues(i)}>
+                    <button className={editMode ? "edit" : "save"} onClick={() => editValues(i)}>
                       {editMode ? (
                         <SvgSave width="15" height="15" />
                       ) : (
