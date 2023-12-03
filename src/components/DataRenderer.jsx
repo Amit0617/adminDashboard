@@ -10,14 +10,16 @@ function DataRenderer({ data }) {
   const [checkBoxes, setCheckBoxes] = React.useState(
     Array(currentData ? currentData.length : null).fill(false)
   );
-  const [editMode, setEditMode] = React.useState(false);
+  const [editMode, setEditMode] = React.useState(
+    Array(currentData ? currentData.length : null).fill(false)
+  );
   const [currentRow, setCurrentRow] = React.useState(null);
   const selectAllCheckBox = useRef();
 
   useEffect(() => {
     setData(data);
     setCheckBoxes(Array(data && data.length).fill(false));
-    console.log(data.length)
+    console.log(data.length);
   }, [data]);
 
   const toggleSelectAll = () => {
@@ -26,7 +28,7 @@ function DataRenderer({ data }) {
       if (allChecked) {
         return Array(currentData.length).fill(true);
       } else {
-        console.log(currentData.length)
+        console.log(currentData.length);
         return Array(currentData.length).fill(false);
       }
     });
@@ -55,8 +57,12 @@ function DataRenderer({ data }) {
   };
 
   const editValues = (i) => {
-    setEditMode((editModeValue) => !editModeValue);
-    if (editMode == false) {
+    setEditMode((editModeValue) => {
+      const newState = [...editModeValue];
+      newState[i] = !newState[i];
+      return newState;
+    });
+    if (editMode[i] == false) {
       const newData = currentData.map((item, index) => {
         if (index === i) {
           item["name"] = (
@@ -124,9 +130,13 @@ function DataRenderer({ data }) {
         <thead>
           <tr>
             <th>
-              <input type="checkbox" ref={selectAllCheckBox} onChange={() => toggleSelectAll()} />
+              <input
+                type="checkbox"
+                ref={selectAllCheckBox}
+                onChange={() => toggleSelectAll()}
+              />
             </th>
-            {currentData &&
+            {currentData && (
               // Object.keys(currentData[0]).map((key, i) => {
               //   // do not render id
               //   if (key === "id") return null;
@@ -137,7 +147,7 @@ function DataRenderer({ data }) {
                 <th>Email</th>
                 <th>Role</th>
               </>
-              }
+            )}
             <th>Actions</th>
           </tr>
         </thead>
@@ -164,8 +174,11 @@ function DataRenderer({ data }) {
                     return <td key={i}>{item[key]}</td>;
                   })}
                   <td>
-                    <button className={editMode ? "edit" : "save"} onClick={() => editValues(i)}>
-                      {editMode ? (
+                    <button
+                      className={editMode[i] ? "save" : "edit"}
+                      onClick={() => editValues(i)}
+                    >
+                      {editMode[i] ? (
                         <SvgSave width="15" height="15" />
                       ) : (
                         <EditIcon width="15" />
