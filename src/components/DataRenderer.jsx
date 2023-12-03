@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "../App.css";
 import DeleteIcon from "./DeleteIcon";
 import EditIcon from "./EditIcon";
@@ -12,22 +12,22 @@ function DataRenderer({ data }) {
   );
   const [editMode, setEditMode] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(null);
+  const selectAllCheckBox = useRef();
 
   useEffect(() => {
     setData(data);
     setCheckBoxes(Array(data && data.length).fill(false));
     console.log(data.length)
   }, [data]);
-  
+
   const toggleSelectAll = () => {
-    setCheckBoxes((prevState) => {
-      // const newState = [...prevState];
-      const allChecked = prevState.every((item) => item);
+    setCheckBoxes(() => {
+      const allChecked = selectAllCheckBox.current.checked;
       if (allChecked) {
-        return Array(currentData.length).fill(false);
+        return Array(currentData.length).fill(true);
       } else {
         console.log(currentData.length)
-        return Array(currentData.length).fill(true);
+        return Array(currentData.length).fill(false);
       }
     });
   };
@@ -124,7 +124,7 @@ function DataRenderer({ data }) {
         <thead>
           <tr>
             <th>
-              <input type="checkbox" onChange={() => toggleSelectAll()} />
+              <input type="checkbox" ref={selectAllCheckBox} onChange={() => toggleSelectAll()} />
             </th>
             {currentData &&
               // Object.keys(currentData[0]).map((key, i) => {
